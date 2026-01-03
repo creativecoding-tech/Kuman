@@ -38,6 +38,7 @@
       <Filter>addons\ofxGui\src</Filter>
     </ClCompile>
     <ClCompile Include="src\Curve.cpp" />
+    <ClCompile Include="src\Cell.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -94,6 +95,7 @@
       <Filter>addons\ofxGui\src</Filter>
     </ClInclude>
     <ClInclude Include="src\Curve.h" />
+    <ClInclude Include="src\Cell.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="icon.rc" />

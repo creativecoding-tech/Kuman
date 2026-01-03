@@ -1,10 +1,14 @@
 #pragma once
 
 #include "ofMain.h"
+#include "Curve.h"
+#include "Cell.h"
 
 class ofApp : public ofBaseApp{
 
 	public:
+		int cellSize = 60;
+		std::vector<std::unique_ptr<Cell>> grid;
 		void setup();
 		void update();
 		void draw();

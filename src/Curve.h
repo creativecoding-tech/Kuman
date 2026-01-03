@@ -19,6 +19,7 @@ public:
 	float cellX, cellY;
 	float cellSize;
 	Curve(float x, float y, float size);
+	Curve();
 	void update();
 	void display();
 	void run();
