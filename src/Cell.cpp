@@ -1,10 +1,7 @@
 #include "Cell.h"
-#include "ofMain.h" // Needed for ofShader definition
+#include "ofMain.h"
 #include <ofGraphics.h>
 #include <ofMath.h>
-
-// Static member definitions removed
-// setupShader removed
 
 Cell::Cell(float startX, float startY, float targetX, float targetY, float size,
            int fibIndex, int col, int row, bool validTarget) {
@@ -18,20 +15,36 @@ Cell::Cell(float startX, float startY, float targetX, float targetY, float size,
   this->size = size;
   this->col = col;
   this->row = row;
+  gridPos.set(startX, startY);
+  phyloPos.set(targetX, targetY);
   fibValue = fibonanci(fibIndex);
   isValid = validTarget;
 
-  int numberOffCurves = 15;
-  for (int i = 0; i < numberOffCurves; i++) {
-    curves.push_back(std::make_unique<Curve>(0, 0, size));
-  }
+  float hue = fmod(fibIndex * 137.5, 255.0);
+  cellColor.setHsb(hue, 255, 220, 200);
 }
 
 void Cell::startAnimation() {
   animating = true;
   animProgress = 0.0;
   // Randomize speed for organic feel (0.02 to 0.08)
-  animSpeed = ofRandom(0.02, 0.08);
+  animSpeed = ofRandom(0.05, 0.08);
+}
+
+void Cell::toPhyllotaxis() {
+  startX = x;
+  startY = y;
+  targetX = phyloPos.x;
+  targetY = phyloPos.y;
+  startAnimation();
+}
+
+void Cell::toGrid() {
+  startX = x;
+  startY = y;
+  targetX = gridPos.x;
+  targetY = gridPos.y;
+  startAnimation();
 }
 
 void Cell::update() {
@@ -44,10 +57,9 @@ void Cell::update() {
 
     float t = animProgress;
     easeProgress = t < 0.5 ? 4 * t * t * t : 1 - pow(-2 * t + 2, 3) / 2;
-  }
 
-  for (auto &curve : curves) {
-    curve->update();
+    x = startX + (targetX - startX) * easeProgress;
+    y = startY + (targetY - startY) * easeProgress;
   }
 }
 
@@ -58,13 +70,7 @@ void Cell::drawRect(ofShader &shader) {
   }
 
   if (!shader.isLoaded()) {
-    // ofLogWarning("Shader tidak loaded! Pakai CPU fallback"); // Spamming log
-    // if in loop? remove warning or keep 'once' CPU fallback
-    if ((col + row) % 2 == 0) {
-      ofSetColor(0);
-    } else {
-      ofSetColor(255, 195, 80, 70);
-    }
+    ofSetColor(cellColor);
     ofFill();
     // Draw at 0,0. Shader adds position offset.
     ofDrawRectangle(0, 0, size, size);
@@ -72,8 +78,10 @@ void Cell::drawRect(ofShader &shader) {
     // Shader diasumsikan SUDAH begin() di ofApp!
 
     // Uniform warna
-    int isGold = ((col + row) % 2 != 0) ? 1 : 0;
-    shader.setUniform1i("isGold", isGold);
+    shader.setUniform1i("isGold", 2); // Mode 2: Fibonacci
+    shader.setUniform4f("uCurveColor", cellColor.r / 255.0f,
+                        cellColor.g / 255.0f, cellColor.b / 255.0f,
+                        cellColor.a / 255.0f);
 
     // Uniform animasi posisi - GPU yang hitung!
     shader.setUniform2f("startPos", startX, startY);
@@ -90,21 +98,6 @@ void Cell::drawRect(ofShader &shader) {
     // Kirim 0,0 sebagai base position, shader akan menggeser (translate) vertex
     // ini
     ofDrawRectangle(0, 0, size, size);
-  }
-}
-
-void Cell::drawCurves(ofShader &shader) {
-  // Set uniforms for curves (same position logic as rects)
-  shader.setUniform2f("startPos", startX, startY);
-  shader.setUniform2f("targetPos", targetX, targetY);
-  shader.setUniform1f("progress", easeProgress); // Use EASED value
-
-  // Mode -1: Use vertex color (not gold/black)
-  shader.setUniform1i("isGold", -1);
-
-  // Curves
-  for (auto &curve : curves) {
-    curve->display(shader); // Pass shader to curve
   }
 }
 

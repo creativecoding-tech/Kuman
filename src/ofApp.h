@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Cell.h"
-#include "Curve.h"
 #include "ofMain.h"
 
 class ofApp : public ofBaseApp {

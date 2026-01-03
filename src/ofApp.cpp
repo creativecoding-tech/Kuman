@@ -2,11 +2,14 @@
 
 //--------------------------------------------------------------
 void ofApp::setup() {
+  ofSetVerticalSync(false);
+  grid.clear();
   ofSetBackgroundAuto(false);
   ofSetEscapeQuitsApp(false);
   ofBackground(255);
   ofEnableAntiAliasing();
   ofEnableSmoothing();
+  ofSetLineWidth(1.0);
 
   shader.load("shadersGL3/shader");
 
@@ -44,7 +47,6 @@ void ofApp::setup() {
 
 //--------------------------------------------------------------
 void ofApp::update() {
-  ofSetWindowTitle("FPS: " + ofToString(ofGetFrameRate()));
   for (auto &cl : grid) {
     cl->update();
   }
@@ -53,28 +55,41 @@ void ofApp::update() {
 //--------------------------------------------------------------
 void ofApp::draw() {
   // Background tanpa shader
-  ofSetColor(255, 60);
+  ofSetColor(255, 30);
   ofFill();
   ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
   ofNoFill();
 
-  // 1. Draw Rects (Batch Shader)
+
   shader.begin();
   for (auto &cl : grid) {
     cl->drawRect(shader);
   }
-  // 2. Draw Curves (ALSO in Shader, Mode -1)
-  for (auto &cl : grid) {
-    cl->drawCurves(shader);
-  }
 
   shader.end();
+
+  // Draw FPS on screen (since fullscreen)
+  // ofSetColor(255, 0, 0);
+  // string fpsStr = "FPS: " + ofToString(ofGetFrameRate());
+  // ofDrawBitmapString(fpsStr, 20, 30);
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
   if (key == 'q' || key == 'Q')
     ofExit(0);
+
+  if (key == 'p' || key == 'P') {
+    for (auto &cl : grid) {
+      cl->toPhyllotaxis();
+    }
+  }
+
+  if (key == 'n' || key == 'N') {
+    for (auto &cl : grid) {
+      cl->toGrid();
+    }
+  }
 }
 
 //--------------------------------------------------------------
@@ -87,11 +102,7 @@ void ofApp::mouseMoved(int x, int y) {}
 void ofApp::mouseDragged(int x, int y, int button) {}
 
 //--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button) {
-  for (auto &cl : grid) {
-    cl->startAnimation();
-  }
-}
+void ofApp::mousePressed(int x, int y, int button) {}
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button) {}
