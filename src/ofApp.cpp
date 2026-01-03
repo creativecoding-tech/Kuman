@@ -13,6 +13,19 @@ void ofApp::setup() {
 
   shader.load("shadersGL3/shader");
 
+  // Inisialisasi GUI (Gaya Radio Button)
+  gui.setup("Pengaturan Background");
+  gui.add(modeTrails.setup("Mode Trails", true));
+  gui.add(modeCanvas.setup("Mode Canvas", false));
+  gui.add(modeNormal.setup("Mode Normal", false));
+
+  // Tambahkan listener untuk logika Radio Button (hanya satu yang aktif)
+  modeTrails.addListener(this, &ofApp::modeTrailsChanged);
+  modeCanvas.addListener(this, &ofApp::modeCanvasChanged);
+  modeNormal.addListener(this, &ofApp::modeNormalChanged);
+
+  showGui = true;
+
   int cols = ofGetWidth() / cellSize;
   int rows = ofGetHeight() / cellSize;
   int totalCells = cols * rows;
@@ -54,21 +67,35 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-  // Background tanpa shader
-  ofSetColor(255, 30);
-  ofFill();
-  ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
-  ofNoFill();
+  // Logika Pemilihan Background (Radio Button Style)
+  if (modeTrails) {
+    // Mode 1: Background transparan (Efek Trails)
+    ofSetBackgroundAuto(false);
+    ofSetColor(255, 30);
+    ofFill();
+    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+  } else if (modeCanvas) {
+    // Mode 2: Tanpa
+  } else if (modeNormal) {
+    // Mode 3: Background Normal (Putih)
+    ofSetBackgroundAuto(true);
+    ofBackground(255);
+  }
 
+  ofNoFill();
 
   shader.begin();
   for (auto &cl : grid) {
     cl->drawRect(shader);
   }
-
   shader.end();
 
-  // Draw FPS on screen (since fullscreen)
+  // Tampilkan GUI jika diaktifkan
+  if (showGui) {
+    gui.draw();
+  }
+
+  // Tampilkan FPS di layar
   // ofSetColor(255, 0, 0);
   // string fpsStr = "FPS: " + ofToString(ofGetFrameRate());
   // ofDrawBitmapString(fpsStr, 20, 30);
@@ -89,6 +116,11 @@ void ofApp::keyPressed(int key) {
     for (auto &cl : grid) {
       cl->toGrid();
     }
+  }
+
+  // Toggle tampilan GUI dengan tombol 'g'
+  if (key == 'g' || key == 'G') {
+    showGui = !showGui;
   }
 }
 
@@ -121,3 +153,25 @@ void ofApp::gotMessage(ofMessage msg) {}
 
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo) {}
+
+// Logika Radio Button: Matikan toggle lain jika yang satu dinyalakan
+void ofApp::modeTrailsChanged(bool &val) {
+  if (val) {
+    modeCanvas = false;
+    modeNormal = false;
+  }
+}
+
+void ofApp::modeCanvasChanged(bool &val) {
+  if (val) {
+    modeTrails = false;
+    modeNormal = false;
+  }
+}
+
+void ofApp::modeNormalChanged(bool &val) {
+  if (val) {
+    modeTrails = false;
+    modeCanvas = false;
+  }
+}

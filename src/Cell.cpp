@@ -28,7 +28,7 @@ void Cell::startAnimation() {
   animating = true;
   animProgress = 0.0;
   // Randomize speed for organic feel (0.02 to 0.08)
-  animSpeed = ofRandom(0.05, 0.08);
+  animSpeed = ofRandom(0.01, 0.08);
 }
 
 void Cell::toPhyllotaxis() {
