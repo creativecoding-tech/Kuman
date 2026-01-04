@@ -1,28 +1,58 @@
 #pragma once
 
-#include "ofMain.h"
-#include "Curve.h"
 #include "Cell.h"
+#include "ofMain.h"
+#include "ofxGui.h" // Sertakan library GUI
 
-class ofApp : public ofBaseApp{
+class ofApp : public ofBaseApp {
 
-	public:
-		int cellSize = 60;
-		std::vector<std::unique_ptr<Cell>> grid;
-		void setup();
-		void update();
-		void draw();
+public:
+  ofParameter<int> cellSize; // Diubah jadi ofParameter untuk GUI
+  std::vector<std::unique_ptr<Cell>> grid;
+  ofShader shader; // Pengelola Shader
 
-		void keyPressed(int key);
-		void keyReleased(int key);
-		void mouseMoved(int x, int y );
-		void mouseDragged(int x, int y, int button);
-		void mousePressed(int x, int y, int button);
-		void mouseReleased(int x, int y, int button);
-		void mouseEntered(int x, int y);
-		void mouseExited(int x, int y);
-		void windowResized(int w, int h);
-		void dragEvent(ofDragInfo dragInfo);
-		void gotMessage(ofMessage msg);
-		
+  enum BackgroundMode { TRAILS, CANVAS, NORMAL };
+  BackgroundMode currentMode = TRAILS;
+
+  // Anggota GUI
+  ofxPanel gui;
+  ofxToggle modeTrails;
+  ofxToggle modeCanvas;
+  ofxToggle modeNormal;
+
+  ofxButton cellSizeUp;
+  ofxButton cellSizeDown;
+  ofxLabel cellSizeDisplay;
+  bool showGui = true;
+
+  // Fungsi listener untuk menangani logika "hanya satu yang aktif" (Radio
+  // Button)
+  void modeTrailsChanged(bool &val);
+  void modeCanvasChanged(bool &val);
+  void modeNormalChanged(bool &val);
+
+  // Listener untuk perubahan cellSize
+  void cellSizeChanged(int &val);
+  void cellSizeUpPressed();
+  void cellSizeDownPressed();
+  void updateCellSizeDisplay();
+
+  // Helper untuk membuat ulang grid
+  void setupGrid();
+
+  void setup();
+  void update();
+  void draw();
+
+  void keyPressed(int key);
+  void keyReleased(int key);
+  void mouseMoved(int x, int y);
+  void mouseDragged(int x, int y, int button);
+  void mousePressed(int x, int y, int button);
+  void mouseReleased(int x, int y, int button);
+  void mouseEntered(int x, int y);
+  void mouseExited(int x, int y);
+  void windowResized(int w, int h);
+  void dragEvent(ofDragInfo dragInfo);
+  void gotMessage(ofMessage msg);
 };

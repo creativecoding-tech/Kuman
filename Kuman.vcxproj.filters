@@ -37,7 +37,6 @@
     <ClCompile Include="..\..\..\AInstaled\openFrameworks\of_v0.12.1_vs_64_release\addons\ofxGui\src\ofxToggle.cpp">
       <Filter>addons\ofxGui\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Curve.cpp" />
     <ClCompile Include="src\Cell.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -94,7 +93,6 @@
     <ClInclude Include="..\..\..\AInstaled\openFrameworks\of_v0.12.1_vs_64_release\addons\ofxGui\src\ofxToggle.h">
       <Filter>addons\ofxGui\src</Filter>
     </ClInclude>
-    <ClInclude Include="src\Curve.h" />
     <ClInclude Include="src\Cell.h" />
   </ItemGroup>
   <ItemGroup>

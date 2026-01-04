@@ -227,7 +227,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Cell.cpp" />
-    <ClCompile Include="src\Curve.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
     <ClCompile Include="..\..\..\AInstaled\openFrameworks\of_v0.12.1_vs_64_release\addons\ofxGui\src\ofxBaseGui.cpp" />
@@ -243,7 +242,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Cell.h" />
-    <ClInclude Include="src\Curve.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="..\..\..\AInstaled\openFrameworks\of_v0.12.1_vs_64_release\addons\ofxGui\src\ofxBaseGui.h" />
     <ClInclude Include="..\..\..\AInstaled\openFrameworks\of_v0.12.1_vs_64_release\addons\ofxGui\src\ofxButton.h" />
