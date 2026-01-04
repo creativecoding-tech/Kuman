@@ -23,13 +23,14 @@ public:
   ofxButton cellSizeUp;
   ofxButton cellSizeDown;
   ofxLabel cellSizeDisplay;
-  bool showGui = true;
 
-  // Fungsi listener untuk menangani logika "hanya satu yang aktif" (Radio
-  // Button)
-  void modeTrailsChanged(bool &val);
-  void modeCanvasChanged(bool &val);
-  void modeNormalChanged(bool &val);
+  bool showGui = false;
+  bool crusorVisible = true;
+
+  //Listener untuk perubahan pada background
+  void modeTrailsChanged(bool& val);
+  void modeCanvasChanged(bool& val);
+  void modeNormalChanged(bool& val);
 
   // Listener untuk perubahan cellSize
   void cellSizeChanged(int &val);

@@ -27,7 +27,7 @@ void ofApp::setup() {
   gui.add(modeCanvas.setup("Mode Canvas", false));
   gui.add(modeNormal.setup("Mode Normal", false));
 
-  // Tambahkan listener untuk logika Radio Button (hanya satu yang aktif)
+  //Tambahkan listener untuk perubahan pada background
   modeTrails.addListener(this, &ofApp::modeTrailsChanged);
   modeCanvas.addListener(this, &ofApp::modeCanvasChanged);
   modeNormal.addListener(this, &ofApp::modeNormalChanged);
@@ -37,7 +37,7 @@ void ofApp::setup() {
   cellSizeUp.addListener(this, &ofApp::cellSizeUpPressed);
   cellSizeDown.addListener(this, &ofApp::cellSizeDownPressed);
 
-  showGui = true;
+  
 
   // Inisialisasi Grid pertama kali
   setupGrid();
@@ -164,10 +164,10 @@ void ofApp::keyPressed(int key) {
     }
   }
 
-  // Toggle tampilan GUI dengan tombol 'g'
   if (key == 'g' || key == 'G') {
-    showGui = !showGui;
+      showGui = !showGui;
   }
+
 }
 
 //--------------------------------------------------------------
@@ -180,7 +180,14 @@ void ofApp::mouseMoved(int x, int y) {}
 void ofApp::mouseDragged(int x, int y, int button) {}
 
 //--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button) {}
+void ofApp::mousePressed(int x, int y, int button) {
+    if (button == 2)  //Klik kanan
+    {
+        crusorVisible = !crusorVisible;
+    }
+    if (crusorVisible) ofShowCursor();
+    if (!crusorVisible) ofHideCursor();
+}
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button) {}
@@ -200,27 +207,26 @@ void ofApp::gotMessage(ofMessage msg) {}
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo) {}
 
-// Logika Radio Button: Matikan toggle lain jika yang satu dinyalakan
-void ofApp::modeTrailsChanged(bool &val) {
-  if (val) {
-    modeCanvas = false;
-    modeNormal = false;
-    currentMode = TRAILS;
-  }
+void ofApp::modeTrailsChanged(bool& val) {
+    if (val) {
+        modeCanvas = false;
+        modeNormal = false;
+        currentMode = TRAILS;
+    }
 }
 
-void ofApp::modeCanvasChanged(bool &val) {
-  if (val) {
-    modeTrails = false;
-    modeNormal = false;
-    currentMode = CANVAS;
-  }
+void ofApp::modeCanvasChanged(bool& val) {
+    if (val) {
+        modeTrails = false;
+        modeNormal = false;
+        currentMode = CANVAS;
+    }
 }
 
-void ofApp::modeNormalChanged(bool &val) {
-  if (val) {
-    modeTrails = false;
-    modeCanvas = false;
-    currentMode = NORMAL;
-  }
+void ofApp::modeNormalChanged(bool& val) {
+    if (val) {
+        modeTrails = false;
+        modeCanvas = false;
+        currentMode = NORMAL;
+    }
 }
