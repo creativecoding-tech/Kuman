@@ -12,7 +12,7 @@ void ofApp::setup() {
 
   shader.load("shadersGL3/shader");
 
-  // Inisialisasi GUI
+  // Inisialisasi GUI   
   gui.setup("Pengaturan Kuman");
 
   // Inisialisasi nilai cellSize secara manual karena slider sudah dihapus
