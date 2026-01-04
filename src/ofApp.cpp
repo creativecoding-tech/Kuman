@@ -3,7 +3,6 @@
 //--------------------------------------------------------------
 void ofApp::setup() {
   ofSetVerticalSync(false);
-  grid.clear();
   ofSetBackgroundAuto(false);
   ofSetEscapeQuitsApp(false);
   ofBackground(255);
@@ -13,8 +12,17 @@ void ofApp::setup() {
 
   shader.load("shadersGL3/shader");
 
-  // Inisialisasi GUI (Gaya Radio Button)
-  gui.setup("Pengaturan Background");
+  // Inisialisasi GUI
+  gui.setup("Pengaturan Kuman");
+
+  // Inisialisasi nilai cellSize secara manual karena slider sudah dihapus
+  cellSize.set("Ukuran Cell", 15, 5, 60);
+
+  // Cell Size "Stepper" (Label + Buttons)
+  gui.add(cellSizeDisplay.setup("Ukuran (5-60)", ofToString(cellSize.get())));
+  gui.add(cellSizeUp.setup("[ + ] Tambah"));
+  gui.add(cellSizeDown.setup("[ - ] Kurang"));
+
   gui.add(modeTrails.setup("Mode Trails", true));
   gui.add(modeCanvas.setup("Mode Canvas", false));
   gui.add(modeNormal.setup("Mode Normal", false));
@@ -24,14 +32,27 @@ void ofApp::setup() {
   modeCanvas.addListener(this, &ofApp::modeCanvasChanged);
   modeNormal.addListener(this, &ofApp::modeNormalChanged);
 
+  // Tambahkan listener untuk perubahan ukuran cell
+  cellSize.addListener(this, &ofApp::cellSizeChanged);
+  cellSizeUp.addListener(this, &ofApp::cellSizeUpPressed);
+  cellSizeDown.addListener(this, &ofApp::cellSizeDownPressed);
+
   showGui = true;
+
+  // Inisialisasi Grid pertama kali
+  setupGrid();
+}
+
+// Helper untuk membuat ulang grid secara dinamis
+void ofApp::setupGrid() {
+  grid.clear();
 
   int cols = ofGetWidth() / cellSize;
   int rows = ofGetHeight() / cellSize;
   int totalCells = cols * rows;
   float goldenAngle = DEG_TO_RAD * 137.5;
 
-  // center point
+  // Titik tengah layar
   float centerX = ofGetWidth() / 2;
   float centerY = ofGetHeight() / 2;
 
@@ -41,13 +62,13 @@ void ofApp::setup() {
     float startX = gridCol * cellSize;
     float startY = gridRow * cellSize;
 
-    // hitung posisi phyllotaxis (target)
+    // Hitung posisi phyllotaxis (target)
     float angle = n * goldenAngle;
     float radius = cellSize * 0.35 * sqrt(n);
     float targetX = centerX + radius * cos(angle);
     float targetY = centerY + radius * sin(angle);
 
-    // cek apakah target dalam bound layar
+    // Cek apakah target berada di dalam batas layar
     bool validTarget =
         (targetX >= cellSize && targetX < ofGetWidth() - cellSize * 2 &&
          targetY >= cellSize && targetY < ofGetHeight() - cellSize * 2);
@@ -56,6 +77,28 @@ void ofApp::setup() {
                                           cellSize, n, gridCol, gridRow,
                                           validTarget));
   }
+}
+
+// Inilah fungsi yang dipanggil saat slider digeser
+void ofApp::cellSizeChanged(int &val) {
+  setupGrid();
+  updateCellSizeDisplay();
+}
+
+void ofApp::cellSizeUpPressed() {
+  if (cellSize < 60) {
+    cellSize++;
+  }
+}
+
+void ofApp::cellSizeDownPressed() {
+  if (cellSize > 5) {
+    cellSize--;
+  }
+}
+
+void ofApp::updateCellSizeDisplay() {
+  cellSizeDisplay = ofToString((int)cellSize);
 }
 
 //--------------------------------------------------------------
@@ -67,22 +110,25 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-  // Logika Pemilihan Background (Radio Button Style)
-  if (modeTrails) {
+  // Logika Pemilihan Background (Switch Case Style)
+  switch (currentMode) {
+  case TRAILS:
     // Mode 1: Background transparan (Efek Trails)
     ofSetBackgroundAuto(false);
     ofSetColor(255, 30);
     ofFill();
     ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
-  } else if (modeCanvas) {
-    // Mode 2: Tanpa
-  } else if (modeNormal) {
+    break;
+  case CANVAS:
+    // Mode 2: Tanpa pembersihan
+    ofSetBackgroundAuto(false);
+    break;
+  case NORMAL:
     // Mode 3: Background Normal (Putih)
     ofSetBackgroundAuto(true);
     ofBackground(255);
+    break;
   }
-
-  ofNoFill();
 
   shader.begin();
   for (auto &cl : grid) {
@@ -159,6 +205,7 @@ void ofApp::modeTrailsChanged(bool &val) {
   if (val) {
     modeCanvas = false;
     modeNormal = false;
+    currentMode = TRAILS;
   }
 }
 
@@ -166,6 +213,7 @@ void ofApp::modeCanvasChanged(bool &val) {
   if (val) {
     modeTrails = false;
     modeNormal = false;
+    currentMode = CANVAS;
   }
 }
 
@@ -173,5 +221,6 @@ void ofApp::modeNormalChanged(bool &val) {
   if (val) {
     modeTrails = false;
     modeCanvas = false;
+    currentMode = NORMAL;
   }
 }

@@ -7,22 +7,38 @@
 class ofApp : public ofBaseApp {
 
 public:
-  int cellSize = 15;
+  ofParameter<int> cellSize; // Diubah jadi ofParameter untuk GUI
   std::vector<std::unique_ptr<Cell>> grid;
   ofShader shader; // Pengelola Shader
 
-  // Anggota GUI (Radio Button Style)
+  enum BackgroundMode { TRAILS, CANVAS, NORMAL };
+  BackgroundMode currentMode = TRAILS;
+
+  // Anggota GUI
   ofxPanel gui;
-  ofxToggle modeTrails; // Mode 1: Trails
-  ofxToggle modeCanvas;  // Mode 2: Hitam
-  ofxToggle modeNormal; // Mode 3: Normal
-  bool showGui = false;
+  ofxToggle modeTrails;
+  ofxToggle modeCanvas;
+  ofxToggle modeNormal;
+
+  ofxButton cellSizeUp;
+  ofxButton cellSizeDown;
+  ofxLabel cellSizeDisplay;
+  bool showGui = true;
 
   // Fungsi listener untuk menangani logika "hanya satu yang aktif" (Radio
   // Button)
   void modeTrailsChanged(bool &val);
   void modeCanvasChanged(bool &val);
   void modeNormalChanged(bool &val);
+
+  // Listener untuk perubahan cellSize
+  void cellSizeChanged(int &val);
+  void cellSizeUpPressed();
+  void cellSizeDownPressed();
+  void updateCellSizeDisplay();
+
+  // Helper untuk membuat ulang grid
+  void setupGrid();
 
   void setup();
   void update();
