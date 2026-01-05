@@ -2,7 +2,8 @@
 
 //--------------------------------------------------------------
 void ofApp::setup() {
-  ofSetVerticalSync(false);
+  ofSetVerticalSync(false); //High Performance
+  ofSetFrameRate(120);
   ofSetBackgroundAuto(false);
   ofSetEscapeQuitsApp(false);
   ofBackground(255);
