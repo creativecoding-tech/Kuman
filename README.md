@@ -74,7 +74,20 @@ Lihat hasilnya di YouTube: **[Kuman - Phyllotaxis Visualization](https://youtu.b
 
 ```bash
 # Clone repository ini
-git clone https://github.com/username/Kuman.git
+git clone https://github.com/creativecoding-tech/Kuman.git
+
+# Checkout ke branch corat-coret
+cd Kuman
+git checkout corat-coret
+
+# Jalankan OpenFrameworks Project Generator
+# Buka: openFrameworks/apps/projectGenerator/projectGenerator.exe
+
+# Import project yang sudah diclone
+# 1. Click "Import" pada Project Generator
+# 2. Navigate ke folder Kuman yang sudah diclone
+# 3. Select folder dan klik "Select Current Folder"
+# 4. Click "Update" atau "Generate"
 
 # Buka Visual Studio
 # Double-click: Kuman.sln
